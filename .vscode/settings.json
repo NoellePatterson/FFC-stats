@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "my-virtualenv/bin/python",
+    "python.linting.pylintEnabled": false
+}
