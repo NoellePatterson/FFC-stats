@@ -50,7 +50,7 @@ for i in range(len(Wet_Tim)):
     WSI_Tim[i] = convertJulianToOffset(WSI_Tim[i], 1995)
     # Peak_Tim_2[i] = convertJulianToOffset(Peak_Tim_2[i], 1995)
 
- """To plot only the 10th to 90th percentile results uncomment block below"""
+"""To plot only the 10th to 90th percentile results uncomment block below"""
     # low = 10
     # high = 90
     # for currentClass in classes: 
@@ -70,4 +70,4 @@ with open('tukey_input.csv', 'w') as csvfile:
 from pandas import read_csv
 df = read_csv('tukey_input.csv')
 df.columns = header
-df.to_csv('tukey_input.csv', index=False)
+df.to_csv('Outputs/tukey_input.csv', index=False)

@@ -92,4 +92,4 @@ with open('resultsOutput.csv') as csv_file:
         resultsNoHeaderLists.append(row)
 
 df = pd.DataFrame(resultsNoHeaderLists, index = header)
-df.to_csv('resultsOutput.csv')
+df.to_csv('Outputs/resultsOutput.csv')
