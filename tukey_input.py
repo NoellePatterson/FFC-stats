@@ -1,18 +1,23 @@
 # Code to generate input data for Tukyey's HSD analysis and plots with TukHSD package in R, using FFC output files. 
 # Written by Noelle Patterson, UC Davis Water Management Lab, fall 2018
+# Dictionary structure: input data is classes dict containing class keys with all results info.
+# Output data is classes_results dict with class keys pointing to class dictionaries
+# Separate class dictionaries have keys for each metric and values with all vals. 
 
 import glob
 import numpy as np
 import csv
 import math
 import pandas as pd
+import itertools
 from Utils.sortGages import sortGages
 from Utils.convertDateType import convertJulianToOffset
 
 files = glob.glob("All-Results/*_annual_result_matrix.csv")
 classes = sortGages(files)
 class_label = []
-all_metrics = {}
+class_results = {}
+
 Avg = []
 CV = []
 SP_Tim = []
@@ -27,45 +32,97 @@ WSI_Mag = []
 WSI_Tim = []
 
 for currentClass, value in classes.items():
+    class_results[currentClass] = {'Avg': [], 'CV':[], 'SP_Tim':[], 'DS_Tim':[], 'DS_Mag_10':[], 'DS_Dur_WSI':[], 'Wet_Tim':[],\
+    'Wet_BFL_Mag':[], 'Peak_Fre_10':[], 'Peak_Fre_20':[], 'WSI_Mag':[], 'WSI_Tim':[]}
     for i, annual in enumerate (value):
         for index, subyear in enumerate(annual):
-            Avg.append(annual.loc['Avg'][index])
-            CV.append(annual.loc['CV'][index])
-            SP_Tim.append(annual.loc['SP_Tim'][index])
-            DS_Tim.append(annual.loc['DS_Tim'][index])
-            DS_Mag_10.append(annual.loc['DS_Mag_10'][index])
-            DS_Dur_WSI.append(annual.loc['DS_Dur_WSI'][index])
-            Wet_Tim.append(annual.loc['Wet_Tim'][index])
-            Wet_BFL_Mag.append(annual.loc['Wet_BFL_Mag'][index])
-            Peak_Fre_10.append(annual.loc['Peak_Fre_10'][index])
-            Peak_Fre_20.append(annual.loc['Peak_Fre_20'][index])
-            WSI_Mag.append(annual.loc['WSI_Mag'][index])
-            WSI_Tim.append(annual.loc['WSI_Tim'][index])
+            # import pdb; pdb.set_trace()
+            class_results[currentClass]['Avg'].append(annual.loc['Avg'][index])
+            class_results[currentClass]['CV'].append(annual.loc['CV'][index])
+            class_results[currentClass]['SP_Tim'].append(annual.loc['SP_Tim'][index])
+            class_results[currentClass]['DS_Tim'].append(annual.loc['DS_Tim'][index])
+            class_results[currentClass]['DS_Mag_10'].append(annual.loc['DS_Mag_10'][index])
+            class_results[currentClass]['DS_Dur_WSI'].append(annual.loc['DS_Dur_WSI'][index])
+            class_results[currentClass]['Wet_Tim'].append(annual.loc['Wet_Tim'][index])
+            class_results[currentClass]['Wet_BFL_Mag'].append(annual.loc['Wet_BFL_Mag'][index])
+            class_results[currentClass]['Peak_Fre_10'].append(annual.loc['Peak_Fre_10'][index])
+            class_results[currentClass]['Peak_Fre_20'].append(annual.loc['Peak_Fre_20'][index])
+            class_results[currentClass]['WSI_Mag'].append(annual.loc['WSI_Mag'][index])
+            class_results[currentClass]['WSI_Tim'].append(annual.loc['WSI_Tim'][index])
+ 
             class_label.append(int(currentClass[-1])) # create list with class label to keep track of each row's class
+    """Convert calendar date outputs to offset dates for correct analysis"""
+    for i in range(len(class_results[currentClass]['SP_Tim'])):  
+        class_results[currentClass]['SP_Tim'][i] = convertJulianToOffset(class_results[currentClass]['SP_Tim'][i], 1995)
+        class_results[currentClass]['Wet_Tim'][i] = convertJulianToOffset(class_results[currentClass]['Wet_Tim'][i], 1995)
+        class_results[currentClass]['DS_Tim'][i] = convertJulianToOffset(class_results[currentClass]['DS_Tim'][i], 1995)
+        class_results[currentClass]['WSI_Tim'][i] = convertJulianToOffset(class_results[currentClass]['WSI_Tim'][i], 1995)
 
-for i in range(len(Wet_Tim)):
-    Wet_Tim[i] = convertJulianToOffset(Wet_Tim[i], 1995)
-    SP_Tim[i] = convertJulianToOffset(SP_Tim[i], 1995)
-    DS_Tim[i] = convertJulianToOffset(DS_Tim[i], 1995)
-    WSI_Tim[i] = convertJulianToOffset(WSI_Tim[i], 1995)
-    # Peak_Tim_2[i] = convertJulianToOffset(Peak_Tim_2[i], 1995)
+    """To plot only the 10th to 90th percentile results uncomment block below"""
+    low = 10
+    high = 90
+    class_results[currentClass]['Avg'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['Avg'], low) or ele > np.nanpercentile(class_results[currentClass]['Avg'], high) else ele for index, ele in enumerate(class_results[currentClass]['Avg'])]
+    class_results[currentClass]['CV'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['CV'], low) or ele > np.nanpercentile(class_results[currentClass]['CV'], high) else ele for index, ele in enumerate(class_results[currentClass]['CV'])]
+    class_results[currentClass]['SP_Tim'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['SP_Tim'], low) or ele > np.nanpercentile(class_results[currentClass]['SP_Tim'], high) else ele for index, ele in enumerate(class_results[currentClass]['SP_Tim'])]
+    class_results[currentClass]['DS_Tim'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['DS_Tim'], low) or ele > np.nanpercentile(class_results[currentClass]['DS_Tim'], high) else ele for index, ele in enumerate(class_results[currentClass]['DS_Tim'])]
+    class_results[currentClass]['DS_Mag_10'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['DS_Mag_10'], low) or ele > np.nanpercentile(class_results[currentClass]['DS_Mag_10'], high) else ele for index, ele in enumerate(class_results[currentClass]['DS_Mag_10'])]
+    class_results[currentClass]['DS_Dur_WSI'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['DS_Dur_WSI'], low) or ele > np.nanpercentile(class_results[currentClass]['DS_Dur_WSI'], high) else ele for index, ele in enumerate(class_results[currentClass]['DS_Dur_WSI'])]
+    class_results[currentClass]['Wet_Tim'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['Wet_Tim'], low) or ele > np.nanpercentile(class_results[currentClass]['Wet_Tim'], high) else ele for index, ele in enumerate(class_results[currentClass]['Wet_Tim'])]
+    class_results[currentClass]['Wet_BFL_Mag'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['Wet_BFL_Mag'], low) or ele > np.nanpercentile(class_results[currentClass]['Wet_BFL_Mag'], high) else ele for index, ele in enumerate(class_results[currentClass]['Wet_BFL_Mag'])]
+    class_results[currentClass]['Peak_Fre_10'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['Peak_Fre_10'], low) or ele > np.nanpercentile(class_results[currentClass]['Peak_Fre_10'], high) else ele for index, ele in enumerate(class_results[currentClass]['Peak_Fre_10'])]
+    class_results[currentClass]['Peak_Fre_20'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['Peak_Fre_20'], low) or ele > np.nanpercentile(class_results[currentClass]['Peak_Fre_20'], high) else ele for index, ele in enumerate(class_results[currentClass]['Peak_Fre_20'])]
+    class_results[currentClass]['WSI_Mag'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['WSI_Mag'], low) or ele > np.nanpercentile(class_results[currentClass]['WSI_Mag'], high) else ele for index, ele in enumerate(class_results[currentClass]['WSI_Mag'])]
+    class_results[currentClass]['WSI_Tim'] = [np.nan if ele < np.nanpercentile(class_results[currentClass]['WSI_Tim'], low) or ele > np.nanpercentile(class_results[currentClass]['WSI_Tim'], high) else ele for index, ele in enumerate(class_results[currentClass]['WSI_Tim'])]
 
-"""To plot only the 10th to 90th percentile results uncomment block below"""
-    # low = 10
-    # high = 90
-    # for currentClass in classes: 
-    #     Avg = [np.nan if ele < np.nanpercentile(Avg, low) or ele > np.nanpercentile(Avg, high) else ele for index, ele in enumerate(Avg)]
+"""Arrange class_results dictionary items into table format"""
+for currentClass, value in class_results.items(): 
+    label = [int(currentClass[-1])]*len(value['Avg'])
+    Avg = value['Avg']
+    CV = value['CV']
+    SP_Tim = value['SP_Tim']
+    DS_Tim = value['DS_Tim']
+    DS_Mag_10 = value['DS_Mag_10']
+    DS_Dur_WSI = value['DS_Dur_WSI']
+    Wet_Tim = value['Wet_Tim']
+    Wet_BFL_Mag = value['Wet_BFL_Mag']
+    Peak_Fre_10 = value['Peak_Fre_10']
+    Peak_Fre_20 = value['Peak_Fre_20']
+    WSI_Mag = value['WSI_Mag']
+    WSI_Tim = value['WSI_Tim']
+    if currentClass == 'class1':
+        class1_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim]
+    if currentClass == 'class2':
+        class2_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim]
+    if currentClass == 'class3':
+        class3_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim]
+    if currentClass == 'class4':
+        class4_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim]
+    if currentClass == 'class5':
+        class5_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim]
+    if currentClass == 'class6':
+        class6_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim]
+    if currentClass == 'class7':
+        class7_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim]
+    if currentClass == 'class8':
+        class8_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim]
+    if currentClass == 'class9':
+        class9_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim]
+
+total_table = zip(class1_table, class2_table, class3_table, class4_table, class5_table, class6_table, class7_table, class8_table, class9_table)  # stack results from each class so they all appear under one metric column
+total_table = list(total_table) 
+for index in range(len(total_table)): # condense each list of lists into one column per metric for output
+    total_table[index] = list(itertools.chain(*total_table[index]))
 
 class_names = ["1-SM", "2-HSR", "3-LSR", "4-WS", "5-GW", "6-PGR", "7-FER", "8-RGW", "9-HLP"]
-newArray = [class_names[item - 1] for item in class_label]   
+total_table[0] = [class_names[item - 1] for item in total_table[0]]   
+# import pdb; pdb.set_trace()
 
-csv_outputs = [newArray, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim]
-csv_outputs_transpose = list(map(list, zip(*csv_outputs)))
+total_table_transpose = list(map(list, zip(*total_table)))
 header = ['groups', 'Avg', 'CV', 'SP_Tim', 'DS_Tim', 'DS_Mag_10', 'DS_Dur_WSI', 'Wet_Tim', 'Wet_BFL_Mag', 'Peak_Fre_10', 'Peak_Fre_20', 'WSI_Mag', 'WSI_Tim']
 
 with open('tukey_input.csv', 'w') as csvfile:
     resultsWriter = csv.writer(csvfile, dialect='excel')
-    resultsWriter.writerows(csv_outputs_transpose)
+    resultsWriter.writerows(total_table_transpose)
 
 from pandas import read_csv
 df = read_csv('tukey_input.csv')
