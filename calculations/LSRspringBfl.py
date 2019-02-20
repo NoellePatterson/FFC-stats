@@ -50,5 +50,16 @@ def LSRspringBfl(classes):
         LSRspringBfl[currentClass] = np.nanmean(LSRspringBfl[currentClass])
         LSRspringBflRate[currentClass] = np.nanmean(LSRspringBflRate[currentClass])
         allOtherYearsRate[currentClass] = np.nanmean(allOtherYearsRate[currentClass])
+    """Remove output values for all classes except LSR"""
+    lsr_dicts = [LSRspringBfl, LSRspringBflRate, allOtherYearsRate]
+    for lsr_dict in lsr_dicts:
+        lsr_dict['class1'] = None
+        lsr_dict['class2'] = None
+        lsr_dict['class4'] = None
+        lsr_dict['class5'] = None
+        lsr_dict['class6'] = None
+        lsr_dict['class7'] = None
+        lsr_dict['class8'] = None
+        lsr_dict['class9'] = None
 
     return LSRspringBfl, LSRspringBflRate, allOtherYearsRate

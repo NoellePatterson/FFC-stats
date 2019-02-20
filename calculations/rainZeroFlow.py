@@ -12,6 +12,11 @@ def rainZeroFlow(classes):
                 rainZeroFlow[currentClass] = [zeroFlow]   
     for currentClass in rainZeroFlow: 
         rainZeroFlow[currentClass] = np.nanmedian(rainZeroFlow[currentClass])
+    rainZeroFlow['class1'] = None
+    rainZeroFlow['class2'] = None
+    rainZeroFlow['class3'] = None
+    rainZeroFlow['class5'] = None
+    rainZeroFlow['class9'] = None
         
     return rainZeroFlow
     

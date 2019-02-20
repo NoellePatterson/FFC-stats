@@ -29,5 +29,9 @@ def rainLateBfl(classes):
 
     for currentClass in rainLateBfl:
         rainLateBfl[currentClass] = np.nanmean(rainLateBfl[currentClass])
-
+    rainLateBfl['class1'] = None
+    rainLateBfl['class2'] = None
+    rainLateBfl['class3'] = None
+    rainLateBfl['class5'] = None
+    rainLateBfl['class9'] = None
     return rainLateBfl

@@ -41,5 +41,14 @@ def snowSpringBfl(classes):
         snowSpringBfl[currentClass] = np.nanmean(snowSpringBfl[currentClass])
         snowSpringBflRate[currentClass] = np.nanmean(snowSpringBflRate[currentClass])
         allOtherYearsRate[currentClass] = np.nanmean(allOtherYearsRate[currentClass])
+    """Remove outputs for all classes besides snow"""
+    snow_dicts = [snowSpringBfl, snowSpringBflRate, allOtherYearsRate]
+    for snow_dict in snow_dicts:
+        snow_dict['class3'] = None
+        snow_dict['class4'] = None
+        snow_dict['class5'] = None
+        snow_dict['class6'] = None
+        snow_dict['class7'] = None
+        snow_dict['class8'] = None
 
     return snowSpringBfl, snowSpringBflRate, allOtherYearsRate

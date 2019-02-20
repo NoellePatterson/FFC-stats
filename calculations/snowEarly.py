@@ -50,5 +50,13 @@ def snowEarly(classes):
     for currentClass in snowEarlySpring:
         snowEarlySpring[currentClass] = np.nanmean(snowEarlySpring[currentClass])
         snowEarlyWet[currentClass] = np.nanmean(snowEarlyWet[currentClass])
-
+    """Remove all other class outputs except for snow classes"""
+    snow_dicts = [snowEarlySpring, snowEarlyWet]
+    for snow_dict in snow_dicts:
+        snow_dict['class3'] = None
+        snow_dict['class4'] = None
+        snow_dict['class5'] = None
+        snow_dict['class6'] = None
+        snow_dict['class7'] = None
+        snow_dict['class8'] = None
     return snowEarlySpring, snowEarlyWet

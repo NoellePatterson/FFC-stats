@@ -35,4 +35,8 @@ def rainWetSpring(classes):
 
     for currentClass in rainWetSpring:
         rainWetSpring[currentClass] = np.nanmean(rainWetSpring[currentClass])
+    rainWetSpring['class1'] = None
+    rainWetSpring['class2'] = None
+    rainWetSpring['class5'] = None
+    rainWetSpring['class9'] = None
     return rainWetSpring

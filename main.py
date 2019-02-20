@@ -44,7 +44,7 @@ rainLateBfl = rainLateBfl(classes)
 rainEarlySpring = rainEarlySpring(highflowClasses)
 rainLateWet = rainLateWet(highflowClasses)
 LSRstandardDev = LSRstandardDev(LSRresults)
-SDwet, Wet10, Wet90, SDspring, Spring10, Spring90, SDdry, Dry10, Dry90 = SDandRange(classes)
+SDwet, Wet10, Wet90, SDspring, Spring10, Spring90, SDdry, Dry10, Dry90, roc10, roc90 = SDandRange(classes)
 summaryMetric = summaryMetric(classes)
 
 print(summaryMetric)
@@ -79,11 +79,13 @@ with open('resultsOutput.csv', 'w') as csvfile:
     resultsWriter.writerow(SDdry)
     resultsWriter.writerow(Dry10)
     resultsWriter.writerow(Dry90)
+    resultsWriter.writerow(roc10)
+    resultsWriter.writerow(roc90)
     resultsWriter.writerow(summaryMetric)
 
 header = ['class','wetCount','wetInitCount','springBflLag','snowEarlySpring','snowEarlyWet','snowSpringBfl','snowSpringBflRate','snowAllOtherYearsRate',\
           'LSRspringBfl','LSRspringBflRate','LSRallOtherYearsRate','rainWetSpring','rainZeroFlow','rainLateBfl','rainEarlySpring','rainLateWet',\
-          'LSRstandardDev','SDwet','Wet10','Wet90','SDspring','Spring10','Spring90','SDdry','Dry10','Dry90','summaryMetric']
+          'LSRstandardDev','SDwet','Wet10','Wet90','SDspring','Spring10','Spring90','SDdry','Dry10','Dry90','roc10','roc90','summaryMetric']
 
 with open('resultsOutput.csv') as csv_file:
     resultsNoHeaderLists = []

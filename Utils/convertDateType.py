@@ -30,11 +30,10 @@ def convertOffsetToJulianSingle(offsetDate, year):
         daysInYear = 365
         offsetStartDate = 273
         intOffsetDate = int(offsetDate)
-
-    if intOffsetDate <=  offsetStartDate:
-        julian_nonoffset_date = intOffsetDate + (daysInYear - offsetStartDate)
+    if intOffsetDate - (daysInYear - offsetStartDate) > 0:
+        julian_nonoffset_date = intOffsetDate - (daysInYear - offsetStartDate)
     else:
-        julian_nonoffset_date = intOffsetDate - offsetStartDate
+        julian_nonoffset_date = intOffsetDate + offsetStartDate
     return julian_nonoffset_date
 
 # function works with single values

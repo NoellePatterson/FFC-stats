@@ -69,5 +69,8 @@ def rainEarlySpring(highflowClasses):
 
     for currentClass in rainEarlySpring:
         rainEarlySpring[currentClass] = np.nanmean(rainEarlySpring[currentClass])
-
+    rainEarlySpring['class1'] = None
+    rainEarlySpring['class2'] = None
+    rainEarlySpring['class5'] = None
+    rainEarlySpring['class9'] = None
     return rainEarlySpring
