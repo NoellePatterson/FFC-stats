@@ -1,5 +1,8 @@
 import numpy as np
-from Utils.convertDateType import convertOffsetToJulian
+from Utils.convertDateType import convertJulianToOffset
+
+def is_nan(x):
+    return (x is np.nan or x != x)
 
 def springBflLag(classes):
     springBflLag = {}
@@ -19,13 +22,13 @@ def springBflLag(classes):
             year = int(gage.index[0])
 
             for i, flow in enumerate(gage): # loop through each year in the gage
-                if np.isnan(springTim[index][i]) == False and np.isnan(sumTim[index][i]) == False:
+                if is_nan(springTim[index][i]) == False and is_nan(sumTim[index][i]) == False:
                     allWaterYears = allWaterYears + 1
-
-                    offsetSpringTim = [int(springTim[index][i])]
-                    offsetSpringTim = convertOffsetToJulian(offsetSpringTim, year)
-                    offsetSumTim = [int(sumTim[index][i])]
-                    offsetSumTim = convertOffsetToJulian(offsetSumTim, year)
+ 
+                    julianSpringTim = [int(springTim[index][i])]
+                    offsetSpringTim = convertJulianToOffset(julianSpringTim, year)
+                    julianSumTim = [int(sumTim[index][i])]
+                    offsetSumTim = convertJulianToOffset(julianSumTim, year)
 
                     if offsetSpringTim[0] + 150 <= offsetSumTim[0]:
                         counter = counter + 1

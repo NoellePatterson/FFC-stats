@@ -1,5 +1,5 @@
 import numpy as np
-from Utils.convertDateType import convertJulianToOffset, convertOffsetToJulianSingle
+from Utils.convertDateType import convertJulianToOffsetSingle, convertOffsetToJulianSingle
 
 def calcSpreadMetrics(classes, resultsName):
     timingSD = {}
@@ -20,7 +20,7 @@ def calcSpreadMetrics(classes, resultsName):
             for index, item in enumerate(sublist):
                 if np.isnan(item) == False:
                     year = int(sublist.index[index])
-                    offsetTim = convertJulianToOffset(item, year)
+                    offsetTim = convertJulianToOffsetSingle(item, year)
                     flatSDlist.append(offsetTim)
         for sublist in roclist:
             for index, item in enumerate(sublist):

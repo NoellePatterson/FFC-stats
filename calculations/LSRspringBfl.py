@@ -1,5 +1,5 @@
 import numpy as np
-from Utils.convertDateType import convertOffsetToJulian
+from Utils.convertDateType import convertOffsetToJulian, convertJulianToOffset
 
 def LSRspringBfl(classes):
 
@@ -24,11 +24,11 @@ def LSRspringBfl(classes):
             for i, year in enumerate(gage): # loop through each year in the gage
                 allWaterYears = allWaterYears + 1
                 if np.isnan(springTim[index][i]) == False and np.isnan(sumTim[index][i]) == False:
-                    offsetSpringTim = [int(springTim[index][i])]
-                    offsetSpringTim = convertOffsetToJulian(offsetSpringTim, year)
+                    julianSpringTim = [int(springTim[index][i])]
+                    offsetSpringTim = convertJulianToOffset(julianSpringTim, year)
 
-                    offsetSumTim = [int(sumTim[index][i])]
-                    offsetSumTim = convertOffsetToJulian(offsetSumTim, year)
+                    julianSumTim = [int(sumTim[index][i])]
+                    offsetSumTim = convertJulianToOffset(julianSumTim, year)
                     if offsetSpringTim[0] + 30 >= offsetSumTim[0]: # check when spring and summer are within 30 days of eachother
                         counter = counter + 1
                         LSRspringBflRateArray.append(None)

@@ -1,5 +1,5 @@
 import numpy as np
-from Utils.convertDateType import convertJulianToOffset, convertOffsetToJulianSingle
+from Utils.convertDateType import convertJulianToOffsetSingle, convertOffsetToJulianSingle
 
 def summaryMetric(classes):
     summaryMetric = {} 
@@ -18,13 +18,13 @@ def summaryMetric(classes):
     # for currentClass in summaryMetric: 
     #     summaryMetric[currentClass] = np.nanpercentile(summaryMetric[currentClass], 50)
 
-        """Use this block is date converting is needed"""
+        """Use this block if date converting is needed"""
         convertList = []
         for sublist in Avg:
             for index, item in enumerate(sublist):
                 if np.isnan(item) == False:
                     year = 1995
-                    offsetTim = convertJulianToOffset(item, year)
+                    offsetTim = convertJulianToOffsetSingle(item, year)
                     convertList.append(offsetTim)
         avg_julian = convertOffsetToJulianSingle(np.nanmean(convertList), year)
         summaryMetric[currentClass] = avg_julian

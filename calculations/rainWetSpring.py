@@ -1,5 +1,5 @@
 import numpy as np
-from Utils.convertDateType import convertOffsetToJulian
+from Utils.convertDateType import convertJulianToOffset
 
 def rainWetSpring(classes):
     rainWetSpring = {}
@@ -20,11 +20,11 @@ def rainWetSpring(classes):
                 if np.isnan(wetTim[index][i]) == False and np.isnan(springTim[index][i]) == False:
                     allWaterYears = allWaterYears + 1
 
-                    offsetWetTim = [int(wetTim[index][i])]
-                    offsetWetTim = convertOffsetToJulian(offsetWetTim, year)
+                    julianWetTim = [int(wetTim[index][i])]
+                    offsetWetTim = convertJulianToOffset(julianWetTim, year)
 
-                    offsetSpringTim = [int(springTim[index][i])]
-                    offsetSpringTim = convertOffsetToJulian(offsetSpringTim, year)
+                    julianSpringTim = [int(springTim[index][i])]
+                    offsetSpringTim = convertJulianToOffset(julianSpringTim, year)
                     if offsetWetTim[0] + 30 >= offsetSpringTim[0]: # within 30 days each other
                         counter = counter + 1
 

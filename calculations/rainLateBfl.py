@@ -1,5 +1,5 @@
 import numpy as np
-from Utils.convertDateType import convertOffsetToJulian
+from Utils.convertDateType import convertJulianToOffset
 
 def rainLateBfl(classes):
     rainLateBfl = {}
@@ -17,8 +17,8 @@ def rainLateBfl(classes):
                 if np.isnan(sumTim[index][i]) == False:
                     allWaterYears = allWaterYears + 1
 
-                    offsetSumTim = [int(sumTim[index][i])]
-                    offsetSumTim = convertOffsetToJulian(offsetSumTim, year)
+                    julianSumTim = [int(sumTim[index][i])]
+                    offsetSumTim = convertJulianToOffset(julianSumTim, year)
                     if offsetSumTim[0] > 305: # check if summer date is later than August 1st
                         counter = counter + 1
 

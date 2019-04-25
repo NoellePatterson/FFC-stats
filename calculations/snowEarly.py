@@ -1,5 +1,5 @@
 import numpy as np
-from Utils.convertDateType import convertOffsetToJulian
+from Utils.convertDateType import convertJulianToOffset
 
 def snowEarly(classes):
     snowEarlySpring = {}
@@ -21,8 +21,8 @@ def snowEarly(classes):
             for i, year in enumerate(gage): # loop through each year in the gage
                 if np.isnan(springTim[index][i]) == False:
                     allWaterYearsSp = allWaterYearsSp + 1
-                    offsetSpringTim = [int(springTim[index][i])]
-                    offsetSpringTim = convertOffsetToJulian(offsetSpringTim, year)
+                    julianSpringTim = [int(springTim[index][i])]
+                    offsetSpringTim = convertJulianToOffset(julianSpringTim, year)
                     if offsetSpringTim[0] < 106:
                         counterSp = counterSp + 1
             if currentClass in snowEarlySpring:
@@ -37,8 +37,8 @@ def snowEarly(classes):
             for i, year in enumerate(gage): # loop through each year in the gage
                 if np.isnan(wetTim[index][i]) == False:
                     allWaterYearsWet = allWaterYearsWet + 1
-                    offsetWetTim = [int(wetTim[index][i])]
-                    offsetWetTim = convertOffsetToJulian(offsetWetTim, year)
+                    julianWetTim = [int(wetTim[index][i])]
+                    offsetWetTim = convertJulianToOffset(julianWetTim, year)
                     if offsetWetTim[0] < 152:
                         counterWet = counterWet + 1
 

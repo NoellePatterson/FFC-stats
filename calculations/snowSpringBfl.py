@@ -1,4 +1,8 @@
 import numpy as np
+from Utils.convertDateType import convertJulianToOffset
+
+def is_nan(x):
+    return (x is np.nan or x != x)
 
 def snowSpringBfl(classes): 
     snowSpringBfl = {}
@@ -19,14 +23,19 @@ def snowSpringBfl(classes):
         allOtherYearsRateArray = []
         for index, gage in enumerate(springTim): # loop through each gage (223)
             for i, year in enumerate(gage): # loop through each year in the gage
-                allWaterYears = allWaterYears + 1
-                if springTim[index][i] + 45 >= sumTim[index][i]:
-                    counter = counter + 1
-                    snowSpringBflRateArray.append(None)
-                    snowSpringBflRateArray[-1] = value[index].loc['SP_ROC'][i] #index the rate of change years matching the sp-bfl criteria
-                elif springTim[index][i] + 45 < sumTim[index][i]:
-                    allOtherYearsRateArray.append(None)
-                    allOtherYearsRateArray[-1] = value[index].loc['SP_ROC'][i] #index the rate of change of all other years
+                if is_nan(springTim[index][i]) == False and is_nan(sumTim[index][i]) == False:
+                    allWaterYears = allWaterYears + 1
+                    julianSpringTim = [springTim[index][i]]
+                    offsetSpringTim = convertJulianToOffset(julianSpringTim, year)
+                    julianSumTim = [sumTim[index][i]]
+                    offsetSumTim = convertJulianToOffset(julianSumTim, year)
+                    if offsetSpringTim[0] + 45 >= offsetSumTim[0]:
+                        counter = counter + 1
+                        snowSpringBflRateArray.append(None)
+                        snowSpringBflRateArray[-1] = value[index].loc['SP_ROC'][i] #index the rate of change years matching the sp-bfl criteria
+                    elif offsetSpringTim[0] + 45 < offsetSumTim[0]:
+                        allOtherYearsRateArray.append(None)
+                        allOtherYearsRateArray[-1] = value[index].loc['SP_ROC'][i] #index the rate of change of all other years
                     
             if currentClass in snowSpringBfl:
                 snowSpringBfl[currentClass].append(counter/allWaterYears) 
