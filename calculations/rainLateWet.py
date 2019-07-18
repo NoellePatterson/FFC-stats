@@ -49,6 +49,7 @@ def rainLateWet(highflowClasses):
         rainLateWet[currentClass] = np.nanmean(rainLateWet[currentClass])
     rainLateWet['class1'] = None
     rainLateWet['class2'] = None
+    rainLateWet['class3'] = None
     rainLateWet['class5'] = None
     rainLateWet['class9'] = None
     return rainLateWet

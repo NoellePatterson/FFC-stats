@@ -39,7 +39,7 @@ def snowEarly(classes):
                     allWaterYearsWet = allWaterYearsWet + 1
                     julianWetTim = [int(wetTim[index][i])]
                     offsetWetTim = convertJulianToOffset(julianWetTim, year)
-                    if offsetWetTim[0] < 152:
+                    if offsetWetTim[0] < 124: # if earlier than Feb 1st, offset
                         counterWet = counterWet + 1
 
             if currentClass in snowEarlyWet:
@@ -53,6 +53,7 @@ def snowEarly(classes):
     """Remove all other class outputs except for snow classes"""
     snow_dicts = [snowEarlySpring, snowEarlyWet]
     for snow_dict in snow_dicts:
+        snow_dict['class2'] = None
         snow_dict['class3'] = None
         snow_dict['class4'] = None
         snow_dict['class5'] = None

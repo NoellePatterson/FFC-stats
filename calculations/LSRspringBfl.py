@@ -2,7 +2,7 @@ import numpy as np
 from Utils.convertDateType import convertOffsetToJulian, convertJulianToOffset
 
 def LSRspringBfl(classes):
-
+    lagtime = 21
     LSRspringBfl = {}
     LSRspringBflRate = {}
     allOtherYearsRate = {}
@@ -29,11 +29,11 @@ def LSRspringBfl(classes):
 
                     julianSumTim = [int(sumTim[index][i])]
                     offsetSumTim = convertJulianToOffset(julianSumTim, year)
-                    if offsetSpringTim[0] + 30 >= offsetSumTim[0]: # check when spring and summer are within 30 days of eachother
+                    if offsetSpringTim[0] + lagtime >= offsetSumTim[0]: # check when spring and summer are within 30 days of eachother
                         counter = counter + 1
                         LSRspringBflRateArray.append(None)
                         LSRspringBflRateArray[-1] = value[index].loc['SP_ROC'][i] # index the rate of change of that gage in that year
-                    elif offsetSpringTim[0] + 30 < offsetSumTim[0]:
+                    elif offsetSpringTim[0] + lagtime < offsetSumTim[0]:
                         allOtherYearsRateArray.append(None)
                         allOtherYearsRateArray[-1] = value[index].loc['SP_ROC'][i] #index the rate of change of all other years
 
@@ -54,9 +54,7 @@ def LSRspringBfl(classes):
     lsr_dicts = [LSRspringBfl, LSRspringBflRate, allOtherYearsRate]
     for lsr_dict in lsr_dicts:
         lsr_dict['class1'] = None
-        lsr_dict['class2'] = None
         lsr_dict['class4'] = None
-        lsr_dict['class5'] = None
         lsr_dict['class6'] = None
         lsr_dict['class7'] = None
         lsr_dict['class8'] = None

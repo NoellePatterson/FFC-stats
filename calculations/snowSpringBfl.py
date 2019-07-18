@@ -5,6 +5,7 @@ def is_nan(x):
     return (x is np.nan or x != x)
 
 def snowSpringBfl(classes): 
+    lagtime = 30
     snowSpringBfl = {}
     snowSpringBflRate = {}
     allOtherYearsRate = {}
@@ -29,11 +30,11 @@ def snowSpringBfl(classes):
                     offsetSpringTim = convertJulianToOffset(julianSpringTim, year)
                     julianSumTim = [sumTim[index][i]]
                     offsetSumTim = convertJulianToOffset(julianSumTim, year)
-                    if offsetSpringTim[0] + 45 >= offsetSumTim[0]:
+                    if offsetSpringTim[0] + lagtime >= offsetSumTim[0]:
                         counter = counter + 1
                         snowSpringBflRateArray.append(None)
                         snowSpringBflRateArray[-1] = value[index].loc['SP_ROC'][i] #index the rate of change years matching the sp-bfl criteria
-                    elif offsetSpringTim[0] + 45 < offsetSumTim[0]:
+                    elif offsetSpringTim[0] + lagtime < offsetSumTim[0]:
                         allOtherYearsRateArray.append(None)
                         allOtherYearsRateArray[-1] = value[index].loc['SP_ROC'][i] #index the rate of change of all other years
                     
@@ -53,6 +54,7 @@ def snowSpringBfl(classes):
     """Remove outputs for all classes besides snow"""
     snow_dicts = [snowSpringBfl, snowSpringBflRate, allOtherYearsRate]
     for snow_dict in snow_dicts:
+        snow_dict['class2'] = None
         snow_dict['class3'] = None
         snow_dict['class4'] = None
         snow_dict['class5'] = None

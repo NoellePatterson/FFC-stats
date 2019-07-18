@@ -11,7 +11,7 @@ import math
 import pandas as pd
 import itertools
 from Utils.sortGages import sortGages
-from Utils.convertDateType import convertJulianToOffset
+from Utils.convertDateType import convertJulianToOffset, convertJulianToOffsetSingle
 
 files = glob.glob("All-Results/*_annual_result_matrix.csv")
 classes = sortGages(files)
@@ -19,12 +19,13 @@ class_label = []
 class_results = {}
 
 for currentClass, value in classes.items():
-    class_results[currentClass] = {'Avg': [], 'CV':[], 'SP_Tim':[], 'DS_Tim':[], 'DS_Mag_10':[], 'DS_Dur_WSI':[],'DS_Dur_WS':[], 'Wet_Tim':[],\
+    class_results[currentClass] = {'Avg': [], 'CV':[], 'Std':[],'SP_Tim':[], 'DS_Tim':[], 'DS_Mag_10':[], DS_Mag_50':[],'DS_Dur_WSI':[],'DS_Dur_WS':[], 'Wet_Tim':[],\
     'Wet_BFL_Mag':[], 'Peak_Fre_10':[], 'Peak_Fre_20':[], 'WSI_Mag':[], 'WSI_Tim':[], 'WSI_Dur':[]}
     for i, annual in enumerate (value):
         for index, subyear in enumerate(annual):
             # import pdb; pdb.set_trace()
             class_results[currentClass]['Avg'].append(annual.loc['Avg'][index])
+            class_results[currentClass]['Std'].append(annual.loc['Std'][index])
             class_results[currentClass]['CV'].append(annual.loc['CV'][index])
             class_results[currentClass]['SP_Tim'].append(annual.loc['SP_Tim'][index])
             class_results[currentClass]['DS_Tim'].append(annual.loc['DS_Tim'][index])
@@ -42,10 +43,10 @@ for currentClass, value in classes.items():
             class_label.append(int(currentClass[-1])) # create list with class label to keep track of each row's class
     """Convert calendar date outputs to offset dates for correct analysis"""
     for i in range(len(class_results[currentClass]['SP_Tim'])):  
-        class_results[currentClass]['SP_Tim'][i] = convertJulianToOffset(class_results[currentClass]['SP_Tim'][i], 1995)
-        class_results[currentClass]['Wet_Tim'][i] = convertJulianToOffset(class_results[currentClass]['Wet_Tim'][i], 1995)
-        class_results[currentClass]['DS_Tim'][i] = convertJulianToOffset(class_results[currentClass]['DS_Tim'][i], 1995)
-        class_results[currentClass]['WSI_Tim'][i] = convertJulianToOffset(class_results[currentClass]['WSI_Tim'][i], 1995)
+        class_results[currentClass]['SP_Tim'][i] = convertJulianToOffsetSingle(class_results[currentClass]['SP_Tim'][i], 1995)
+        class_results[currentClass]['Wet_Tim'][i] = convertJulianToOffsetSingle(class_results[currentClass]['Wet_Tim'][i], 1995)
+        class_results[currentClass]['DS_Tim'][i] = convertJulianToOffsetSingle(class_results[currentClass]['DS_Tim'][i], 1995, dry=True)
+        class_results[currentClass]['WSI_Tim'][i] = convertJulianToOffsetSingle(class_results[currentClass]['WSI_Tim'][i], 1995)
 
     """To plot only the 10th to 90th percentile results uncomment block below"""
     # low = 10
@@ -73,10 +74,12 @@ for currentClass, value in class_results.items():
         label = [int(3)]*len(value['Avg'])
     # label = [int(currentClass[-1])]*len(value['Avg'])
     Avg = value['Avg']
+    Std = value['Std']
     CV = value['CV']
     SP_Tim = value['SP_Tim']
     DS_Tim = value['DS_Tim']
     DS_Mag_10 = value['DS_Mag_10']
+    DS_Mag_50 = value['DS_Mag_50']
     DS_Dur_WSI = value['DS_Dur_WSI']
     DS_Dur_WS = value['DS_Dur_WS']
     Wet_Tim = value['Wet_Tim']
@@ -86,24 +89,26 @@ for currentClass, value in class_results.items():
     WSI_Mag = value['WSI_Mag']
     WSI_Tim = value['WSI_Tim']
     WSI_Dur = value['WSI_Dur']
+
+    output_values = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Mag_50, DS_Dur_WSI, DS_Dur_WS, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim, WSI_Dur]
     if currentClass == 'class1':
-        class1_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, DS_Dur_WS, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim, WSI_Dur]
+        class1_table = output_values
     if currentClass == 'class2':
-        class2_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, DS_Dur_WS, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim, WSI_Dur]
+        class2_table = output_values
     if currentClass == 'class3':
-        class3_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, DS_Dur_WS, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim, WSI_Dur]
+        class3_table = output_values
     if currentClass == 'class4':
-        class4_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, DS_Dur_WS, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim, WSI_Dur]
+        class4_table = output_values
     if currentClass == 'class5':
-        class5_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, DS_Dur_WS, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim, WSI_Dur]
+        class5_table = output_values
     if currentClass == 'class6':
-        class6_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, DS_Dur_WS, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim, WSI_Dur]
+        class6_table = output_values
     if currentClass == 'class7':
-        class7_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, DS_Dur_WS, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim, WSI_Dur]
+        class7_table = output_values
     if currentClass == 'class8':
-        class8_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, DS_Dur_WS, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim, WSI_Dur]
+        class8_table = output_values
     if currentClass == 'class9':
-        class9_table = [label, Avg, CV, SP_Tim, DS_Tim, DS_Mag_10, DS_Dur_WSI, DS_Dur_WS, Wet_Tim, Wet_BFL_Mag, Peak_Fre_10, Peak_Fre_20, WSI_Mag, WSI_Tim, WSI_Dur]
+        class9_table = output_values
 
 total_table = zip(class1_table, class2_table, class3_table, class4_table, class5_table, class6_table, class7_table, class8_table, class9_table)  # stack results from each class so they all appear under one metric column
 total_table = list(total_table) 
@@ -133,10 +138,11 @@ total_table_transpose = list(map(list, zip(*total_table)))
 #         total_rain+= 1 
 #         if np.isnan(row[14]) == False:
 #             rain_wsi += 1
+header = []
+for element in output_values:
+    import pdb; pdb.set_trace()
+    header.append(string(element))
 
-header = ['groups', 'Avg', 'CV', 'SP_Tim', 'DS_Tim', 'DS_Mag_10', 'DS_Dur_WSI', 'DS_Dur_WS', 'Wet_Tim', 'Wet_BFL_Mag', 'Peak_Fre_10', 'Peak_Fre_20', 'WSI_Mag', 'WSI_Tim', 'WSI_Dur']
-import pdb; pdb.set_trace()
-with open('tukey_input.csv', 'w') as csvfile:
     resultsWriter = csv.writer(csvfile, dialect='excel')
     resultsWriter.writerows(total_table_transpose)
 

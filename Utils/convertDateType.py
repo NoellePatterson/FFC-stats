@@ -61,18 +61,25 @@ def convertJulianToOffset(julianDateList, year):
     return offsetDateList
 
 # function works with single value input
-def convertJulianToOffsetSingle(julianDate, year):
+def convertJulianToOffsetSingle(julianDate, year, dry = False):
     if year % 4 == 0:
         daysInYear = 366
         offsetStartDate = 274
     else:
         daysInYear = 365
         offsetStartDate = 273
-
-    julianDate = int(julianDate)
+    
     if math.isnan(julianDate) == False: 
         intJulianDate = int(julianDate)
-        if intJulianDate >= offsetStartDate:
+        if dry == True:
+            if julianDate > 274 and julianDate < 300:
+                offsetDate = 365 + (julianDate-offsetStartDate)
+                return offsetDate
+            elif intJulianDate >= offsetStartDate:
+                offsetDate = intJulianDate - offsetStartDate
+            else:
+                offsetDate = intJulianDate + (daysInYear - offsetStartDate)
+        elif intJulianDate >= offsetStartDate:
             offsetDate = intJulianDate - offsetStartDate
         else:
             offsetDate = intJulianDate + (daysInYear - offsetStartDate)
